@@ -1,23 +1,21 @@
 import pandas as pd
-from datetime import datetime
 from database.database_connection import MysqlPython
+from extraction_sheets.sheets_api import read_google_sheet
+from datetime import datetime
+
 
 def insert_recebimentos():
     mysql_python = MysqlPython()
-    # Caminho para o arquivo do Excel
-    caminho_arquivo = 'C:\\Users\\conta\\colibri_data\\estoque_entradas.xlsx'
-
-    # Carregar todas as planilhas do arquivo
-    tabelas_excel = pd.read_excel(caminho_arquivo, sheet_name=None)
+    dados_sheets = read_google_sheet()
 
     sql_produtos = f'''INSERT IGNORE INTO Produtos (nome_produto, unidade) VALUES'''
     sql_estoque = f'''INSERT IGNORE INTO Estoque (nome_produto, data, quantidade) VALUES'''
 
     # Iterar sobre as planilhas e acessar os DataFrames
-    for nome_planilha, df in tabelas_excel.items():
-        if nome_planilha == "Dicionário":
-            df_dicionario = df
+    for nome_planilha, df in dados_sheets.items():
+        if nome_planilha == "Dicionario":
             df = df.dropna()
+            df_dicionario = df
             for _, row in df_dicionario.iterrows():
                 values_produtos = f'''(
                 '{row['produto']}',
@@ -30,17 +28,19 @@ def insert_recebimentos():
             # Remover linhas com valores ausentes
             df_melted = df_melted.dropna()
             for _, row in df_melted.iterrows():
-                values_estoque = f'''(
-                '{row['produto']}',
-                '{row['data']}',
-                {row['quantidade']})'''
+                data_obj = datetime.strptime(row['data'], '%m/%d/%Y')
+                data_formatada = data_obj.strftime('%Y-%m-%d')
+                if row['unidade_medida'] != 'unidade_medida' and row['quantidade'] != '':
+                    values_estoque = f'''(
+                    '{row['produto']}',
+                    '{data_formatada}',
+                    {row['quantidade']})'''
 
-                sql_estoque += values_estoque + ","
+                    sql_estoque += values_estoque + ","
+
 
     sql_produtos = sql_produtos[:-1]
     sql_estoque = sql_estoque[:-1]
-
-
     mysql_python.query(sql_produtos, commit=True)
     mysql_python.query(sql_estoque, commit=True)
 
