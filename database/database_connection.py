@@ -30,50 +30,68 @@ class MysqlPython:
             self.mydb.close()
             print('Conexão MySQL encerrada.')
 
-    def query(self, sql, params=None, single=False, noret=False, commit=False):
+    def query(self, sql, params=None, single=False, commit=False):
         cursor = None
 
+        if not self.mydb or not self.mydb.is_connected():
+            self.open()
+
         try:
-            if not self.mydb or not self.mydb.is_connected():
-                self.open()
-
-            try:
-                cursor = self.mydb.cursor()
-
-                if params is None:
-                    cursor.execute(sql)
+            cursor = self.mydb.cursor()
+            if params is None:
+                self.cursor.execute(sql)
+            else:
+                if isinstance(params, list):
+                    self.cursor.executemany(sql, params)
                 else:
-                    if isinstance(params, list):
-                        print(params, sql)
-                        cursor.executemany(sql, params)
-                    else:
-                        cursor.execute(sql, params)
+                    self.cursor.execute(sql, params)
 
-                print("A consulta foi executada com sucesso.")
-            except Exception as e:
-                print("Erro ao executar a consulta:", e, sql)
+            print("Consulta executada com sucesso.")
 
             if commit:
-                try:
-                    self.mydb.commit()
-                    print("Commit executado com sucesso.")
-                except Exception as e:
-                    print("Erro ao executar o commit:", e)
+                self.commit()
 
-            if noret:
-                return None
             if single:
-                return cursor.fetchone()
+                return self.fetch_one()
             else:
-                return cursor.fetchall()
+                return self.fetch_all()
 
         except Error as e:
             print('Erro ao executar a consulta:', e, sql)
 
         finally:
-            if cursor is not None:
-                cursor.close()
-
             self.close()
 
+    def execute(self, sql, params=None):
+        try:
+            self.open()
 
+            if params is None:
+                self.cursor.execute(sql)
+            else:
+                if isinstance(params, list):
+                    self.cursor.executemany(sql, params)
+                else:
+                    self.cursor.execute(sql, params)
+
+            print("Consulta executada com sucesso.")
+
+        except Error as e:
+            print('Erro ao executar a consulta:', e, sql)
+
+        finally:
+            self.close()
+
+    def fetch_one(self):
+        return self.cursor.fetchone()
+
+    def fetch_all(self):
+        return self.cursor.fetchall()
+
+    def commit(self):
+        try:
+            self.mydb.commit()
+            print("Commit executado com sucesso.")
+        except Error as e:
+            print("Erro ao executar o commit:", e)
+            self.mydb.rollback()

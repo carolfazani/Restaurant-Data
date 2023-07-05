@@ -4,13 +4,11 @@ from transform_data.clean_data import *
 from datetime import datetime, timedelta
 
 
-
 def insert_movimento_caixa():
 
-
     dt_atual = datetime.today().date()
-    #dt_anterior = (dt_atual - timedelta(days=1)).strftime('%Y-%m-%d')
-    dt_anterior = '2017-08-01'
+    dt_anterior = (dt_atual - timedelta(days=1)).strftime('%Y-%m-%d')
+    #dt_anterior = '2017-08-01'
 
     mysql_python = MysqlPython()
 
