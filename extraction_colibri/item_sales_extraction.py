@@ -1,5 +1,5 @@
-from extraction_api.temporary_token import get_access_token
-from extraction_api.api import make_request
+from extraction_colibri.temporary_token import get_access_token
+from extraction_colibri.colibri_api import make_request
 
 def item_sales_extraction(dt_inicio, dt_fim):
     token_temp = get_access_token()
@@ -22,9 +22,17 @@ def item_sales_extraction(dt_inicio, dt_fim):
 
     all_data = []  # Lista para armazenar todos os dados
 
-    while True:
-        url = f"https://cloud.ncrcolibri.com.br/api/v1/itemvenda?lojas={params['lojas']}&dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina={params['pagina']}"
+    url = f"https://cloud.ncrcolibri.com.br/api/v1/itemvenda?lojas={params['lojas']}&dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina=1"
+    try:
+        data = make_request(url, headers, params)
+        total_paginas = data['totalPaginas']
+    except Exception as e:
+        print(f"Erro na requisição: {e}")
+        return all_data
 
+    # Iterar sobre as páginas utilizando um loop for
+    for pagina in range(1, total_paginas + 1):
+        url = f"https://cloud.ncrcolibri.com.br/api/v1/itemvenda?lojas={params['lojas']}&dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina={pagina}"
         try:
             # Fazer a requisição para a página atual
             data = make_request(url, headers, params)
@@ -34,10 +42,8 @@ def item_sales_extraction(dt_inicio, dt_fim):
 
             all_data.append(data)  # Adicionar os dados na lista
 
-            params['pagina'] += 1  # Incrementar a página para a próxima requisição
-
         except Exception as e:
-            # Tratar o erro de requisição 400
+            # Tratar o erro de requisição
             print(f"Erro na requisição: {e}")
             break
 

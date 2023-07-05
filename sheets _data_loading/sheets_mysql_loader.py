@@ -25,7 +25,7 @@ def insert_recebimentos():
         else:
             # Converter colunas de datas em linhas
             df_melted = pd.melt(df, id_vars=['produto','unidade_medida'], var_name='data', value_name='quantidade')
-            # Remover linhas com valores ausentes
+
             df_melted = df_melted.dropna()
             for _, row in df_melted.iterrows():
                 data_obj = datetime.strptime(row['data'], '%m/%d/%Y')

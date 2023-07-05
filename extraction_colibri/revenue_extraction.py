@@ -1,10 +1,11 @@
-from extraction_api.temporary_token import get_access_token
-from extraction_api.api import make_request
+from extraction_colibri.temporary_token import get_access_token
+from extraction_colibri.colibri_api import make_request
 import json
 
 
 def revenue_extraction(dt_inicio, dt_fim):
     token_temp = get_access_token()
+
 
     # Cabeçalho da requisição
     headers = {

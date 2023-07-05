@@ -31,17 +31,27 @@ class MysqlPython:
             print('Conexão MySQL encerrada.')
 
     def query(self, sql, params=None, single=False, noret=False, commit=False):
+        cursor = None
+
         try:
             if not self.mydb or not self.mydb.is_connected():
                 self.open()
 
             try:
                 cursor = self.mydb.cursor()
-                cursor.execute(sql, params)
+
+                if params is None:
+                    cursor.execute(sql)
+                else:
+                    if isinstance(params, list):
+                        print(params, sql)
+                        cursor.executemany(sql, params)
+                    else:
+                        cursor.execute(sql, params)
+
                 print("A consulta foi executada com sucesso.")
             except Exception as e:
-                print("Erro ao executar a consulta:", e)
-
+                print("Erro ao executar a consulta:", e, sql)
 
             if commit:
                 try:
@@ -61,8 +71,9 @@ class MysqlPython:
             print('Erro ao executar a consulta:', e, sql)
 
         finally:
+            if cursor is not None:
+                cursor.close()
+
             self.close()
-
-
 
 
