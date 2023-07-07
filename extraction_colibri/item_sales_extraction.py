@@ -1,5 +1,5 @@
 from extraction_colibri.temporary_token import get_access_token
-from extraction_colibri.colibri_api import make_request
+from extraction_colibri.get_api import make_request
 
 def item_sales_extraction(dt_inicio, dt_fim):
     token_temp = get_access_token()

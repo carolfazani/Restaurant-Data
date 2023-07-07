@@ -3,7 +3,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from extraction_sheets.api_keys import create_keyfile_dict
 import pandas as pd
 
-def read_google_sheet():
+def read_google_sheets():
     # Defina o escopo e as credenciais do Google Sheets
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     credentials = creds = ServiceAccountCredentials.from_json_keyfile_dict(create_keyfile_dict(), scope)

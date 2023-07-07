@@ -1,4 +1,4 @@
-from extraction_colibri.colibri_api import make_request
+from extraction_colibri.get_api import make_request
 import os
 import datetime
 
@@ -8,12 +8,14 @@ TOKEN_EXPIRATION = None
 
 # Verificar se o token está expirado
 def is_token_expired():
+
     global TOKEN_EXPIRATION
     current_time = datetime.datetime.now()
     return TOKEN_EXPIRATION is None or current_time >= TOKEN_EXPIRATION
 
 # Função para obter o token de acesso
 def get_access_token():
+
     global ACCESS_TOKEN, TOKEN_EXPIRATION
 
     # Verificar se o token já foi obtido e está válido

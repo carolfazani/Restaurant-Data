@@ -1,5 +1,5 @@
 from extraction_colibri.temporary_token import get_access_token
-from extraction_colibri.colibri_api import make_request
+from extraction_colibri.get_api import make_request
 import json
 
 
@@ -25,7 +25,7 @@ def revenue_extraction(dt_inicio, dt_fim):
     all_data = []  # Lista para armazenar todos os dados
 
 
-    url = f"https://cloud.ncrcolibri.com.br/api/v1/movimentocaixa?dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina=pagina=1]"
+    url = f"https://cloud.ncrcolibri.com.br/api/v1/movimentocaixa?dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina=1"
     try:
         data = make_request(url, headers, params)
         total_paginas = data['totalPaginas']
@@ -34,7 +34,7 @@ def revenue_extraction(dt_inicio, dt_fim):
         return all_data
 
     for pagina in range(1, total_paginas + 1):
-        url = f"https://cloud.ncrcolibri.com.br/api/v1/movimentocaixa?dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina={params['pagina']}]"
+        url = f"https://cloud.ncrcolibri.com.br/api/v1/movimentocaixa?dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina={pagina}"
         try:
             # Fazer a requisição para a página atual
             data = make_request(url, headers, params)
