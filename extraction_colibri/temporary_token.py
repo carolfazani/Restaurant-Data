@@ -25,6 +25,7 @@ def get_access_token():
     # Token de acesso
     token = os.environ.get('TOKEN_ACESSO')
 
+
     # Endpoint da API
     url = f'https://cloud.ncrcolibri.com.br/oauth/authenticate?client_id={token}'
 
@@ -40,6 +41,6 @@ def get_access_token():
 
 
 
-    return ACCESS_TOKEN
+    return  ACCESS_TOKEN
 
-get_access_token()
+

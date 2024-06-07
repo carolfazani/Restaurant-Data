@@ -1,8 +1,12 @@
 from extraction_colibri.temporary_token import get_access_token
 from extraction_colibri.get_api import make_request
+from datetime import datetime
+import json
 
-def item_sales_extraction(dt_inicio, dt_fim):
+
+def revenue_extraction(dt_inicio, dt_fim):
     token_temp = get_access_token()
+
 
     # Cabeçalho da requisição
     headers = {
@@ -15,14 +19,14 @@ def item_sales_extraction(dt_inicio, dt_fim):
         'lojas': 1504187988489, # ID(s) da(s) loja(s)
         'dtinicio': dt_inicio, #2017-08-30'
         'dtfim': dt_fim,
-        'cancelados': False,
         'pagina': 1
 
     }
 
     all_data = []  # Lista para armazenar todos os dados
 
-    url = f"https://cloud.ncrcolibri.com.br/api/v1/itemvenda?lojas={params['lojas']}&dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina=1"
+
+    url = f"https://cloud.ncrcolibri.com.br/api/v1/movimentocaixa?dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina=1"
     try:
         data = make_request(url, headers, params)
         total_paginas = data['totalPaginas']
@@ -30,9 +34,8 @@ def item_sales_extraction(dt_inicio, dt_fim):
         print(f"Erro na requisição: {e}")
         return all_data
 
-    # Iterar sobre as páginas utilizando um loop for
     for pagina in range(1, total_paginas + 1):
-        url = f"https://cloud.ncrcolibri.com.br/api/v1/itemvenda?lojas={params['lojas']}&dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina={pagina}"
+        url = f"https://cloud.ncrcolibri.com.br/api/v1/movimentocaixa?dtinicio={params['dtinicio']}&dtfim={params['dtfim']}&pagina={pagina}"
         try:
             # Fazer a requisição para a página atual
             data = make_request(url, headers, params)
@@ -48,3 +51,6 @@ def item_sales_extraction(dt_inicio, dt_fim):
             break
 
     return all_data
+
+dt_fim = datetime.today().date()
+dt_inicio = '2024-04-01'

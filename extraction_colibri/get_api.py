@@ -1,4 +1,5 @@
 import requests
+
 def make_request(url, headers, params=None):
     try:
         # Fazendo a requisição GET
