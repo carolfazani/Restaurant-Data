@@ -59,14 +59,30 @@ class BigQueryTableCreator:
             str: O tipo de dados correspondente suportado pelo BigQuery.
         """
         if dtype == 'datetime64[ns]':
-            return 'STRING'
+            return 'DATE'
         elif dtype == 'object':
             return 'STRING'
         elif dtype == 'int64':
-            return 'STRING'
+            return 'INTEGER'
         elif dtype == 'float64':
-            return 'STRING'
+            return 'FLOAT64'
         elif dtype == 'bool':
-            return 'STRING'
+            return 'BOOL'
         else:
             return 'STRING'
+
+
+'''Para criar as tabelas bronze, usar esse schema
+if dtype == 'datetime64[ns]':
+    return 'STRING'
+elif dtype == 'object':
+    return 'STRING'
+elif dtype == 'int64':
+    return 'STRING'
+elif dtype == 'float64':
+    return 'STRING'
+elif dtype == 'bool':
+    return 'STRING'
+else:
+    return 'STRING
+'''

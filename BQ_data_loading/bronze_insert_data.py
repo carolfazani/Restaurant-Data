@@ -41,7 +41,7 @@ if __name__ == "__main__":
     chain = os.environ['MC_REDE']
     project_id = os.environ['project_id']
     start_date = '2024-01-01'
-    end_date = '2024-01-31'
+    end_date = '2024-06-08'
 
     pipeline = BronzeDataPipeline(project_id, chain, stores, start_date, end_date)
     pipeline.run()

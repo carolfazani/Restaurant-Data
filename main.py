@@ -1,11 +1,35 @@
-from mysql_data_loading.colibri_data_loading.revenue_mysql_loader import insert_movimento_caixa
-from mysql_data_loading.colibri_data_loading.itens_sales_mysql_loader import insert_itens_venda
-from mysql_data_loading.sheets_data_loading.sheets_mysql_loader import insert_recebimentos
+from BQ_data_loading.bronze_insert_data import BronzeDataPipeline
+from BQ_data_loading.silver_insert_data import SilverDataPipeline
+from BQ_data_loading.gold_insert_data import GoldDataPipeline
 
-def main():
-    insert_itens_venda()
-    insert_movimento_caixa()
-    insert_recebimentos()
+import os
+from datetime import datetime
 
-if __name__ == '__main__':
-    main()
+def run_bronze_pipeline():
+    stores = os.environ['MC_LOJA']
+    chain = os.environ['MC_REDE']
+    project_id = os.environ['project_id']
+    start_date = '2024-01-01'
+    end_date = '2024-06-08'
+
+    pipeline = BronzeDataPipeline(project_id, chain, stores, start_date, end_date)
+    pipeline.run()
+
+def run_silver_pipeline():
+    project_id = os.environ['project_id']
+    date = datetime.now().strftime('%Y-%m-%d')
+
+    pipeline = SilverDataPipeline(project_id, date)
+    pipeline.run()
+
+def run_gold_pipeline():
+    project_id = os.environ['project_id']
+    date = datetime.now().strftime('%Y-%m-%d')
+
+    pipeline = GoldDataPipeline(project_id, date)
+    pipeline.run()
+
+if __name__ == "__main__":
+    #run_bronze_pipeline()
+    #run_silver_pipeline()
+    run_gold_pipeline()

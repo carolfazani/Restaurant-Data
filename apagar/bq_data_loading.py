@@ -1,6 +1,6 @@
 from database.bigQuery import BigQueryPython
 from config_BQ.columnTypes import generate_column_types
-from config_BQ.model_data import *
+from apagar.model_data import *
 
 #puxar no main
 

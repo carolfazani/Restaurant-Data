@@ -112,7 +112,6 @@ class SilverModelData:
 
          """Extrai as vendas de itens da tabela Bronze e transforma os dados."""
          query = f""" SELECT * FROM `colibri-413121.bronze.payment_methods` WHERE extraction_date = '{self.date}' """
-         print(query)
          # Executar a consulta
          query_job = self.bq.query(query)
          payment_methods_list = []

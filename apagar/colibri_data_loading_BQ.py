@@ -1,4 +1,4 @@
-from config_BQ.model_data import *
+from apagar.model_data import *
 from config_BQ.columnTypes import generate_column_types
 from database.bigQuery import BigQueryPython
 

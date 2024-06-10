@@ -80,7 +80,6 @@ class SalesExtractor(APIClient):
         """
         if not self.headers:
             self.authenticate()
-
         url = f"https://cloud.ncrcolibri.com.br/api/v1/{self.endpoint}"
         return self.make_api_request(url, self.params)
 
