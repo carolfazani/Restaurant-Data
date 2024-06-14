@@ -1,8 +1,7 @@
 from transform_data.data_converter import *
 from database.bigQuery import BigQueryPython
-from datetime import datetime
 import pandas as pd
-import os
+
 
 
 class SilverModelData:
@@ -48,9 +47,10 @@ class SilverModelData:
             sale_dict['dtLancamento'] = DataConverter.to_datetime(sale_dict['dtLancamento'])
             sale_dict['horaLancamento'] = DataConverter.to_seconds(sale_dict['horaLancamento'])
             sale_dict['tipoCancelamento'] = DataConverter.to_str(sale_dict['tipoCancelamento'])
-            sale_dict['extraction_date'] = DataConverter.to_str(sale_dict['extraction_date'])
+            sale_dict['extraction_date'] = DataConverter.to_datetime(sale_dict['extraction_date'])
             sale_list.append(sale_dict)
         silver_dataframe = pd.DataFrame(sale_list)
+        print(silver_dataframe.dtypes)
         return silver_dataframe
 
     def extract_revenue(self):
@@ -67,22 +67,22 @@ class SilverModelData:
             revenue_dict['rede'] = DataConverter.to_str(revenue_dict['rede'])
             revenue_dict['lojaId'] = DataConverter.to_str(revenue_dict['lojaId'])
             revenue_dict['loja'] = DataConverter.to_str(revenue_dict['loja'])
-            revenue_dict['hora'] = DataConverter.to_str(revenue_dict['hora'])
+            revenue_dict['hora'] = DataConverter.to_seconds(revenue_dict['hora'])
             revenue_dict['idAtendente'] = DataConverter.to_str(revenue_dict['idAtendente'])
             revenue_dict['codAtendente'] = DataConverter.to_str(revenue_dict['codAtendente'])
             revenue_dict['nomeAtendente'] = DataConverter.to_str(revenue_dict['nomeAtendente'])
-            revenue_dict['vlDesconto'] = DataConverter.to_str(revenue_dict['vlDesconto'])
-            revenue_dict['vlAcrescimo'] = DataConverter.to_str(revenue_dict['vlAcrescimo'])
-            revenue_dict['vlTotalReceber'] = DataConverter.to_str(revenue_dict['vlTotalReceber'])
-            revenue_dict['vlTotalRecebido'] = DataConverter.to_str(revenue_dict['vlTotalRecebido'])
-            revenue_dict['vlServicoRecebido'] = DataConverter.to_str(revenue_dict['vlServicoRecebido'])
-            revenue_dict['vlConsumacaoRecebido'] = DataConverter.to_str(revenue_dict['vlConsumacaoRecebido'])
-            revenue_dict['vlTrocoContravale'] = DataConverter.to_str(revenue_dict['vlTrocoContravale'])
-            revenue_dict['vlTrocoDinheiro'] = DataConverter.to_str(revenue_dict['vlTrocoDinheiro'])
-            revenue_dict['vlTrocoRepique'] = DataConverter.to_str(revenue_dict['vlTrocoRepique'])
-            revenue_dict['vlTaxaEntrega'] = DataConverter.to_str(revenue_dict['vlTaxaEntrega'])
-            revenue_dict['vlEntrada'] = DataConverter.to_str(revenue_dict['vlEntrada'])
-            revenue_dict['numPessoas'] = DataConverter.to_str(revenue_dict['numPessoas'])
+            revenue_dict['vlDesconto'] = DataConverter.to_float(revenue_dict['vlDesconto'])
+            revenue_dict['vlAcrescimo'] = DataConverter.to_float(revenue_dict['vlAcrescimo'])
+            revenue_dict['vlTotalReceber'] = DataConverter.to_float(revenue_dict['vlTotalReceber'])
+            revenue_dict['vlTotalRecebido'] = DataConverter.to_float(revenue_dict['vlTotalRecebido'])
+            revenue_dict['vlServicoRecebido'] = DataConverter.to_float(revenue_dict['vlServicoRecebido'])
+            revenue_dict['vlConsumacaoRecebido'] = DataConverter.to_float(revenue_dict['vlConsumacaoRecebido'])
+            revenue_dict['vlTrocoContravale'] = DataConverter.to_float(revenue_dict['vlTrocoContravale'])
+            revenue_dict['vlTrocoDinheiro'] = DataConverter.to_float(revenue_dict['vlTrocoDinheiro'])
+            revenue_dict['vlTrocoRepique'] = DataConverter.to_float(revenue_dict['vlTrocoRepique'])
+            revenue_dict['vlTaxaEntrega'] = DataConverter.to_float(revenue_dict['vlTaxaEntrega'])
+            revenue_dict['vlEntrada'] = DataConverter.to_float(revenue_dict['vlEntrada'])
+            revenue_dict['numPessoas'] = DataConverter.to_int(revenue_dict['numPessoas'])
             revenue_dict['operacaoId'] = DataConverter.to_str(revenue_dict['operacaoId'])
             revenue_dict['maquinaId'] = DataConverter.to_str(revenue_dict['maquinaId'])
             revenue_dict['nomeMaquina'] = DataConverter.to_str(revenue_dict['nomeMaquina'])
@@ -90,22 +90,22 @@ class SilverModelData:
             revenue_dict['meiosPagamento'] = DataConverter.to_str(revenue_dict['meiosPagamento'])
             revenue_dict['turnoId'] = DataConverter.to_str(revenue_dict['turnoId'])
             revenue_dict['consumidores'] = DataConverter.to_str(revenue_dict['consumidores'])
-            revenue_dict['cancelado'] = DataConverter.to_str(revenue_dict['cancelado'])
+            revenue_dict['cancelado'] = DataConverter.to_boolean(revenue_dict['cancelado'])
             revenue_dict['modoVendaId'] = DataConverter.to_str(revenue_dict['modoVendaId'])
             revenue_dict['modoVendaNome'] = DataConverter.to_str(revenue_dict['modoVendaNome'])
             revenue_dict['tipoId'] = DataConverter.to_str(revenue_dict['tipoId'])
             revenue_dict['tipoDesc'] = DataConverter.to_str(revenue_dict['tipoDesc'])
             revenue_dict['clientes'] = DataConverter.to_str(revenue_dict['clientes'])
-            revenue_dict['dataContabil'] = DataConverter.to_str(revenue_dict['dataContabil'])
-            revenue_dict['extraction_date'] = DataConverter.to_str(revenue_dict['extraction_date'])
+            revenue_dict['dataContabil'] = DataConverter.to_datetime(revenue_dict['dataContabil'])
+            revenue_dict['extraction_date'] = DataConverter.to_datetime(revenue_dict['extraction_date'])
             revenue_dict['statusComprovante_numero'] = DataConverter.to_str(revenue_dict['statusComprovante_numero'])
             revenue_dict['statusComprovante_chave'] = DataConverter.to_str(revenue_dict['statusComprovante_chave'])
             revenue_dict['statusComprovante_status'] = DataConverter.to_str(revenue_dict['statusComprovante_status'])
-            revenue_dict['statusComprovante_ressalva'] = DataConverter.to_str(
-            revenue_dict['statusComprovante_ressalva'])
+            revenue_dict['statusComprovante_ressalva'] = DataConverter.to_str(revenue_dict['statusComprovante_ressalva'])
             revenue_dict['statusComprovante'] = DataConverter.to_str(revenue_dict['statusComprovante'])
             revenue_list.append(revenue_dict)
         silver_dataframe = pd.DataFrame(revenue_list)
+        print(silver_dataframe.dtypes)
         return silver_dataframe
 
     def extract_payment_methods(self) -> pd.DataFrame:
@@ -132,8 +132,11 @@ class SilverModelData:
              payment_methods_dict['credenciadora'] = DataConverter.to_str(payment_methods_dict['credenciadora'])
              payment_methods_dict['turnoId'] = DataConverter.to_str(payment_methods_dict['turnoId'])
              payment_methods_dict['cliente'] = DataConverter.to_str(payment_methods_dict['cliente'])
+             payment_methods_dict['extraction_date'] = DataConverter.to_datetime(payment_methods_dict['extraction_date'])
+             payment_methods_dict['idMovimentoCaixa'] = DataConverter.to_str(payment_methods_dict['idMovimentoCaixa'])
              payment_methods_list.append(payment_methods_dict)
          silver_dataframe = pd.DataFrame(payment_methods_list)
+         print(silver_dataframe.dtypes)
          return silver_dataframe
 
 '''

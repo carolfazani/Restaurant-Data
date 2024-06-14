@@ -12,9 +12,9 @@ class DataConverter:
             return 0.00
 
     @staticmethod
-    def to_boolean(value: bool) -> int:
-        """Converte um booleano para 0 ou 1."""
-        return 1 if value else 0
+    def to_boolean(value: bool) -> bool:
+        """Converte um valor para booleano."""
+        return bool(value)
 
     @staticmethod
     def to_str(value: any) -> str:
@@ -22,43 +22,47 @@ class DataConverter:
         return str(value) if value is not None else ""
 
     @staticmethod
-    def to_datetime_with_seconds(timestamp: str) -> str:
-        """Converte um timestamp com segundos para o formato '%Y-%m-%d %H:%M:%S'."""
+    def to_datetime_with_seconds(timestamp: str) -> pd.Timestamp:
+        """Converte um timestamp com segundos para o tipo datetime64[ns]."""
         try:
             dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            return dt.strftime("%Y-%m-%d %H:%M:%S")
+            return pd.Timestamp(dt)
         except (ValueError, TypeError):
-            return ""
+            return pd.NaT
 
     @staticmethod
-    def to_datetime_with_timezone(datetime_str: str) -> str:
-        """Converte um datetime com fuso horário para o formato '%Y-%m-%d %H:%M:%S'."""
+    def to_datetime_with_timezone(datetime_str: str) -> pd.Timestamp:
+        """Converte um datetime com fuso horário para o tipo datetime64[ns]."""
         try:
-            datetime_obj = datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S%z")
-            return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+            datetime_obj = pd.to_datetime(datetime_str, format="%Y-%m-%dT%H:%M:%S%z", utc=True)
+            return datetime_obj
         except (ValueError, TypeError):
-            return ""
+            return pd.NaT
+
 
     @staticmethod
-    def to_datetime(data: str) -> str:
-        """Converte uma data no formato '%Y-%m-%d' ou '%Y%m%d' para '%Y-%m-%d'."""
+    def to_datetime(data: str) -> pd.Timestamp:
+        """Converte uma data no formato '%Y-%m-%d' ou '%Y%m%d' para um objeto datetime64[ns]."""
         try:
             date_obj = datetime.strptime(data, "%Y-%m-%d")
-            return date_obj.strftime("%Y-%m-%d")
         except ValueError:
             try:
                 date_obj = datetime.strptime(data, "%Y%m%d")
-                return date_obj.strftime("%Y-%m-%d")
             except ValueError:
-                return ""
+                return pd.NaT  # Not a Time (NaT) é a representação do pandas para datas inválidas.
+        return pd.Timestamp(date_obj)
 
     @staticmethod
-    def to_seconds(value: str) -> str:
-        """Converte um valor de tempo no formato '%H:%M' para '%H:%M:%S'."""
+    def to_seconds(value: str) -> pd.Timestamp:
+        """Converte um valor de tempo no formato '%H:%M' para um objeto datetime64[ns] com '%H:%M:%S'."""
         try:
-            return datetime.strptime(value, "%H:%M").strftime("%H:%M:%S")
+            # Converte a string para o formato completo com segundos
+            time_with_seconds = datetime.strptime(value, "%H:%M").strftime("%H:%M:%S")
+            # Usa pandas para converter a string para datetime64[ns]
+            return pd.to_datetime(time_with_seconds, format="%H:%M:%S")
         except ValueError:
-            return ""
+            return pd.NaT
+
 
     @staticmethod
     def expand_column(row: dict, column: str) -> pd.DataFrame:
@@ -80,3 +84,7 @@ class DataConverter:
             if isinstance(df[column].iloc[0], list):
                 df[column] = df[column].astype(str)
         return df
+
+    @staticmethod
+    def to_int(value: str) -> int:
+        return int(value)

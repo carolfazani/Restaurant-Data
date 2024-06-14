@@ -91,7 +91,7 @@ class BigQueryPython:
 
             job_config = bigquery.LoadJobConfig(autodetect=False)
             job_config.write_disposition = getattr(bigquery.WriteDisposition, load_mode)
-            job_config.schema = [bigquery.SchemaField(name, dtype) for name, dtype in column_types.items()]
+            job_config.schema = [bigquery.SchemaField(name, field['type'], field['mode']) for name, field in column_types.items()]
 
             job = self.client.load_table_from_dataframe(dataframe, table_ref, job_config=job_config)
             job.result()

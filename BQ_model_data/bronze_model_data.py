@@ -40,8 +40,9 @@ class BronzeModelData:
             for movimento in revenue_sales:
                 payment_methods = movimento.get('meiosPagamento', [])
                 for payment_method in payment_methods:
-                    payment_method[
-                        'extraction_date'] = extraction_date  # Adicionando a data de extração a cada método de pagamento
+                    payment_method['extraction_date'] = extraction_date  # Adicionando a data de extração a cada método de pagamento
+                    payment_method['idMovimentoCaixa'] = movimento['idMovimentoCaixa']
+                    #adc id movimento caixa
                     payment_methods_list.append(payment_method)
         revenue = pd.json_normalize(revenue_list)
         revenue = DataConverter.clean_column_names(revenue)

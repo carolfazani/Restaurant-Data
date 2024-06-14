@@ -63,26 +63,28 @@ class GoldModelData:
     def model_atendentes(self):
         df = self.extract_revenue()
         df = df[['idAtendente', 'codAtendente', 'nomeAtendente']]
+        df = df.dropna(subset=['idAtendente'])
         df = df.drop_duplicates()
         return df
 
     def model_lojas(self):
         df = self.extract_revenue()
         df = df[['loja', 'lojaId']]
+        df = df.dropna(subset=['lojaId'])
         df = df.drop_duplicates()
         return df
 
     def model_maquinas(self):
         df = self.extract_revenue()
-
         df = df[['maquinaId', 'nomeMaquina', 'caminhoMaquina']]
+        df = df.dropna(subset=['maquinaId'])
         df = df.drop_duplicates()
         return df
 
     def model_rede(self):
         df = self.extract_revenue()
-
         df = df[['rede', 'redeId']]
+        df = df.dropna(subset=['redeId'])
         df = df.drop_duplicates()
         return df
 
@@ -90,46 +92,52 @@ class GoldModelData:
     def model_modoVenda(self):
         df = self.extract_revenue()
         df = df[['modoVendaId', 'modoVendaNome']]
+        df = df.dropna(subset=['modoVendaId'])
         df = df.drop_duplicates()
         return df
 
     def model_meioPagamento(self):
         df = self.extract_payment_methods()
-        df = df[['id', 'codigo', 'nome', 'redeId', 'valor', 'bandeira', 'tipoCartao', 'idAtendente', 'autorizacao',
-                         'nsu', 'credenciadora', 'turnoId']]
+        df = df[['id', 'codigo', 'nome', 'redeId']]
+        df = df.dropna(subset=['id'])
+        df = df.drop_duplicates()
+        return df
+
+    def model_pagamentos(self):
+        df = self.extract_payment_methods()
+        df = df[['idMovimentoCaixa','redeId', 'valor', 'idAtendente','turnoId']]
         df = df.drop_duplicates()
         return df
 
     def model_material(self):
         df = self.extract_item_sales()
         df = df[['idMaterial', 'codMaterial', 'codMaterialStr', 'descricao', 'valorTotal', 'valorUnitario']]
+        df = df.dropna(subset=['idMaterial'])
         df = df.drop_duplicates()
         return df
 
     def model_grupo(self):
         df = self.extract_item_sales()
         df = df[['codGrupo','grupoNome']]
+        df = df.dropna(subset=['codGrupo'])
         df = df.drop_duplicates()
         return df
 
     def model_combo(self):
         df = self.extract_item_sales()
         df = df[['comboId', 'combo']]
+        df = df.dropna(subset=['comboId'])
         df = df.drop_duplicates()
         return df
 
     def model_pontoVenda(self):
         df = self.extract_item_sales()
         df = df[['pontoVendaId', 'pontoVendaNome']]
+        df = df.dropna(subset=['pontoVendaId'])
         df = df.drop_duplicates()
         return df
 
-    def model_pagamentos(self):
-        df = self.extract_payment_methods()
-        print(df)
-        df = df[['id', 'redeId', 'valor', 'bandeira', 'tipoCartao', 'idAtendente', 'autorizacao','nsu', 'credenciadora', 'turnoId', 'cliente']]
-        df = df.drop_duplicates()
-        return df
+
 
     def model_itensVenda(self):
         df = self.extract_item_sales()

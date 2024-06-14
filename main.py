@@ -9,8 +9,8 @@ def run_bronze_pipeline():
     stores = os.environ['MC_LOJA']
     chain = os.environ['MC_REDE']
     project_id = os.environ['project_id']
-    start_date = '2024-01-01'
-    end_date = '2024-06-08'
+    start_date = datetime.now().strftime('%Y-%m-%d')
+    end_date = datetime.now().strftime('%Y-%m-%d')
 
     pipeline = BronzeDataPipeline(project_id, chain, stores, start_date, end_date)
     pipeline.run()
@@ -18,14 +18,14 @@ def run_bronze_pipeline():
 def run_silver_pipeline():
     project_id = os.environ['project_id']
     date = datetime.now().strftime('%Y-%m-%d')
-
+    #date = '2024-06-13'
     pipeline = SilverDataPipeline(project_id, date)
     pipeline.run()
 
 def run_gold_pipeline():
     project_id = os.environ['project_id']
     date = datetime.now().strftime('%Y-%m-%d')
-
+    #date = '2024-06-13'
     pipeline = GoldDataPipeline(project_id, date)
     pipeline.run()
 
