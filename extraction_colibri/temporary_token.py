@@ -1,46 +1,39 @@
-from extraction_colibri.get_api import make_request
-import os
 import datetime
+import os
+from google.cloud import secretmanager
+from extraction_colibri.get_api import make_request
 
-# Variáveis globais para armazenar o token e sua data de expiração
-ACCESS_TOKEN = None
-TOKEN_EXPIRATION = None
+class GetToken:
+    def __init__(self):
+        self.project_id = '572991705520' #os.environ.get("etl_project_id")
+        self.secret_name = os.environ.get("SECRET_NAME")
+        self.secret_version = os.environ.get("SECRET_VERSION")
+        self.client = secretmanager.SecretManagerServiceClient()
+        self.access_token = None
+        self.token_expiration = None
+        self.secret_payload = self._get_secret()
 
-# Verificar se o token está expirado
-def is_token_expired():
+    def _get_secret(self):
+        name = f"projects/{self.project_id}/secrets/{self.secret_name}/versions/{self.secret_version}"
+        response = self.client.access_secret_version(request={"name": name})
+        return response.payload.data.decode("UTF-8")
 
-    global TOKEN_EXPIRATION
-    current_time = datetime.datetime.now()
-    return TOKEN_EXPIRATION is None or current_time >= TOKEN_EXPIRATION
+    def _is_token_expired(self):
+        current_time = datetime.datetime.now()
+        return self.token_expiration is None or current_time >= self.token_expiration
 
-# Função para obter o token de acesso
-def get_access_token():
+    def get_access_token(self):
+        if self.access_token is not None and not self._is_token_expired():
+            return self.access_token
+        token = self.secret_payload
+        url = f'https://cloud.ncrcolibri.com.br/oauth/authenticate?client_id={token}'
+        headers = {
+            'Authorization': f'Bearer {token}'
+        }
+        data = make_request(url, headers)
+        self.access_token = data['access_token']
+        self.token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=5)
 
-    global ACCESS_TOKEN, TOKEN_EXPIRATION
-
-    # Verificar se o token já foi obtido e está válido
-    if ACCESS_TOKEN is not None and not is_token_expired():
-        return ACCESS_TOKEN
-
-    # Token de acesso
-    token = os.environ.get('TOKEN_ACESSO')
-
-
-    # Endpoint da API
-    url = f'https://cloud.ncrcolibri.com.br/oauth/authenticate?client_id={token}'
-
-    # Cabeçalho da requisição
-    headers = {
-        'Authorization': f'Bearer {token}'
-    }
-
-    # Fazer a requisição e obter o access_token
-    data = make_request(url, headers)
-    ACCESS_TOKEN = data['access_token']
-    TOKEN_EXPIRATION = datetime.datetime.now() + datetime.timedelta(minutes=5)
-
-
-
-    return  ACCESS_TOKEN
+        return self.access_token
 
 

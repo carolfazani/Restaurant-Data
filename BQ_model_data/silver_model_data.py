@@ -3,20 +3,14 @@ from database.bigQuery import BigQueryPython
 import pandas as pd
 
 
-
 class SilverModelData:
     def __init__(self, project_id: str, date: str):
         self.project_id = project_id
         self.bq = BigQueryPython(project=project_id)
         self.date = date
 
-
     def extract_item_sales(self) -> pd.DataFrame:
-
-        """Extrai as vendas de itens da tabela Bronze e transforma os dados."""
-        query = f""" SELECT * FROM `colibri-413121.bronze.item_sales` WHERE extraction_date = '{self.date}' """
-        print(query)
-        # Executar a consulta
+        query = f""" SELECT * FROM `team-analytics-datalake.bronze.item_sales` WHERE extraction_date = '{self.date}' """
         query_job = self.bq.query(query)
         sale_list = []
         for sale in query_job:
@@ -45,19 +39,15 @@ class SilverModelData:
             sale_dict['cancelado'] = DataConverter.to_boolean(sale_dict['cancelado'])
             sale_dict['timestampLancamento'] = DataConverter.to_datetime_with_seconds(sale_dict['timestampLancamento'])
             sale_dict['dtLancamento'] = DataConverter.to_datetime(sale_dict['dtLancamento'])
-            sale_dict['horaLancamento'] = DataConverter.to_seconds(sale_dict['horaLancamento'])
+            sale_dict['horaLancamento'] = DataConverter.to_str(sale_dict['horaLancamento'])
             sale_dict['tipoCancelamento'] = DataConverter.to_str(sale_dict['tipoCancelamento'])
             sale_dict['extraction_date'] = DataConverter.to_datetime(sale_dict['extraction_date'])
             sale_list.append(sale_dict)
         silver_dataframe = pd.DataFrame(sale_list)
-        print(silver_dataframe.dtypes)
         return silver_dataframe
 
     def extract_revenue(self):
-        """Extrai as vendas de itens da tabela Bronze e transforma os dados."""
-        query = f""" SELECT * FROM `colibri-413121.bronze.revenue` WHERE extraction_date = '{self.date}' """
-        print(query)
-        # Executar a consulta
+        query = f""" SELECT * FROM `team-analytics-datalake.bronze.revenue` WHERE extraction_date = '{self.date}' """
         query_job = self.bq.query(query)
         revenue_list = []
         for revenue in query_job:
@@ -67,7 +57,7 @@ class SilverModelData:
             revenue_dict['rede'] = DataConverter.to_str(revenue_dict['rede'])
             revenue_dict['lojaId'] = DataConverter.to_str(revenue_dict['lojaId'])
             revenue_dict['loja'] = DataConverter.to_str(revenue_dict['loja'])
-            revenue_dict['hora'] = DataConverter.to_seconds(revenue_dict['hora'])
+            revenue_dict['hora'] = DataConverter.to_int(revenue_dict['hora'])
             revenue_dict['idAtendente'] = DataConverter.to_str(revenue_dict['idAtendente'])
             revenue_dict['codAtendente'] = DataConverter.to_str(revenue_dict['codAtendente'])
             revenue_dict['nomeAtendente'] = DataConverter.to_str(revenue_dict['nomeAtendente'])
@@ -96,7 +86,7 @@ class SilverModelData:
             revenue_dict['tipoId'] = DataConverter.to_str(revenue_dict['tipoId'])
             revenue_dict['tipoDesc'] = DataConverter.to_str(revenue_dict['tipoDesc'])
             revenue_dict['clientes'] = DataConverter.to_str(revenue_dict['clientes'])
-            revenue_dict['dataContabil'] = DataConverter.to_datetime(revenue_dict['dataContabil'])
+            revenue_dict['dataContabil'] = DataConverter.to_datetime_with_timezone(revenue_dict['dataContabil'])
             revenue_dict['extraction_date'] = DataConverter.to_datetime(revenue_dict['extraction_date'])
             revenue_dict['statusComprovante_numero'] = DataConverter.to_str(revenue_dict['statusComprovante_numero'])
             revenue_dict['statusComprovante_chave'] = DataConverter.to_str(revenue_dict['statusComprovante_chave'])
@@ -105,14 +95,11 @@ class SilverModelData:
             revenue_dict['statusComprovante'] = DataConverter.to_str(revenue_dict['statusComprovante'])
             revenue_list.append(revenue_dict)
         silver_dataframe = pd.DataFrame(revenue_list)
-        print(silver_dataframe.dtypes)
+        print(revenue_dict['dataContabil'])
         return silver_dataframe
 
     def extract_payment_methods(self) -> pd.DataFrame:
-
-         """Extrai as vendas de itens da tabela Bronze e transforma os dados."""
-         query = f""" SELECT * FROM `colibri-413121.bronze.payment_methods` WHERE extraction_date = '{self.date}' """
-         # Executar a consulta
+         query = f""" SELECT * FROM `team-analytics-datalake.bronze.payment_methods` WHERE extraction_date = '{self.date}' """
          query_job = self.bq.query(query)
          payment_methods_list = []
          for payment_methods in query_job:
@@ -136,7 +123,6 @@ class SilverModelData:
              payment_methods_dict['idMovimentoCaixa'] = DataConverter.to_str(payment_methods_dict['idMovimentoCaixa'])
              payment_methods_list.append(payment_methods_dict)
          silver_dataframe = pd.DataFrame(payment_methods_list)
-         print(silver_dataframe.dtypes)
          return silver_dataframe
 
 '''

@@ -35,6 +35,7 @@ class DataConverter:
         """Converte um datetime com fuso horário para o tipo datetime64[ns]."""
         try:
             datetime_obj = pd.to_datetime(datetime_str, format="%Y-%m-%dT%H:%M:%S%z", utc=True)
+            datetime_obj = datetime_obj.strftime('%Y-%m-%d')
             return datetime_obj
         except (ValueError, TypeError):
             return pd.NaT

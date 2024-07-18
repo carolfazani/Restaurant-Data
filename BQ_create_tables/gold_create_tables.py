@@ -82,19 +82,19 @@ class GoldTableCreator(GoldModelData):
         self.insert_atententes()
         self.insert_maquinas()
         self.insert_pontoVenda()
-        self.insert_material()
-        self.insert_meioPagamento()
+        
         self.insert_modoVenda()
         self.insert_rede()
         self.insert_movimentoCaixa()
         self.insert_itensVenda()
+        self.insert_material()
 
 
-# Example usage
+
+
 if __name__ == "__main__":
-    project_id = os.environ['project_id']
+    project_id = os.environ['PROJECT_ID']
     date = datetime.now().strftime('%Y-%m-%d')
-    #date = '2024-06-09'
     pipeline = GoldTableCreator(project_id, date)
     pipeline.run()
 

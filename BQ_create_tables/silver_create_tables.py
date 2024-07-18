@@ -29,11 +29,10 @@ class SilverTableCreator(SilverModelData):
 
 
 
-# Example usage
+
 if __name__ == "__main__":
-    project_id = os.environ['project_id']
+    project_id = os.environ['PROJECT_ID']
     date = datetime.now().strftime('%Y-%m-%d')
-    #date = '2024-06-10'
     pipeline = SilverTableCreator(project_id, date)
     pipeline.run()
 

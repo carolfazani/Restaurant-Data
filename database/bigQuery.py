@@ -6,35 +6,36 @@ gcloud auth application-default login'''
 
 class BigQueryPython:
     def __init__(self, project: str):
-        """Inicializa uma instância da classe BigQueryPython.
+        """Initializes an instance of the BigQueryPython class.
 
         Args:
-            project (str): O ID do projeto do Google Cloud para conectar ao BigQuery.
+            project (str): The Google Cloud project ID to connect to BigQuery.
         """
         self.project = project
         self.client = None
 
     def open(self):
-        """Abre uma conexão com o BigQuery."""
+        """Opens a connection to BigQuery."""
         try:
             self.client = bigquery.Client(project=self.project)
-            print('Conectado ao BigQuery.')
+            print('Connected to BigQuery.')
         except Exception as e:
-            print('Erro ao acessar o BigQuery:', e)
+            print('Error accessing BigQuery:', e)
 
-    def close(self):
-        """Fecha a conexão com o BigQuery."""
-        print('Conexão com o BigQuery encerrada.')
+    def _close(self):
+        """Closes the connection to BigQuery."""
+        print('Connection to BigQuery closed.')
 
     def query(self, sql: str):
-        """Executa uma consulta SQL no BigQuery.
+        """Executes an SQL query in BigQuery.
 
         Args:
-            sql (str): A consulta SQL a ser executada.
+            sql (str): The SQL query to execute.
 
         Returns:
-            google.cloud.bigquery.table.RowIterator: Os resultados da consulta.
+            google.cloud.bigquery.table.RowIterator: The query results.
         """
+
         try:
             if not self.client:
                 self.open()
@@ -42,21 +43,22 @@ class BigQueryPython:
             query_job = self.client.query(sql)
             results = query_job.result()
 
-            print("Consulta executada com sucesso.")
+            print("Query executed successfully.")
             return results
 
         except Exception as e:
-            print('Erro ao executar a consulta:', e)
+            print('Error executing the query:', e)
 
         finally:
-            self.close()
+            self._close()
 
     def execute(self, sql: str):
-        """Executa uma instrução SQL no BigQuery.
+        """Executes an SQL statement in BigQuery.
 
         Args:
-            sql (str): A instrução SQL a ser executada.
+            sql (str): The SQL statement to execute.
         """
+
         try:
             if not self.client:
                 self.open()
@@ -64,25 +66,25 @@ class BigQueryPython:
             query_job = self.client.query(sql)
             query_job.result()
 
-            print("Consulta executada com sucesso.")
+            print("Query executed successfully.")
 
         except Exception as e:
-            print('Erro ao executar a consulta:', e)
+            print('Error executing the query:', e)
 
         finally:
-            self.close()
+            self._close()
 
     def load_dataframe_to_bigquery(self, dataframe, dataset_id: str, table_name: str, load_mode: str, column_types: dict):
-        """Carrega um DataFrame para uma tabela do BigQuery.
+        """Loads a DataFrame into a BigQuery table.
 
         Args:
-            dataframe (pandas.DataFrame): O DataFrame a ser carregado.
-            dataset_id (str): O ID do conjunto de dados do BigQuery.
-            table_name (str): O nome da tabela do BigQuery.
-            load_mode (str): O modo de carregamento da tabela ("WRITE_TRUNCATE" atualiza valores de linhas existentes, para acrescentar linhas novas usar o "WRITE_APPEND").
-            column_types (dict): Um dicionário que mapeia os nomes das colunas para os tipos de dados.
-
+            dataframe (pandas.DataFrame): The DataFrame to load.
+            dataset_id (str): The BigQuery dataset ID.
+            table_name (str): The BigQuery table name.
+            load_mode (str): The table loading mode ("WRITE_TRUNCATE" updates existing row values, "WRITE_APPEND" appends new rows).
+            column_types (dict): A dictionary mapping column names to data types.
         """
+
         try:
             if not self.client:
                 self.open()
@@ -96,10 +98,10 @@ class BigQueryPython:
             job = self.client.load_table_from_dataframe(dataframe, table_ref, job_config=job_config)
             job.result()
 
-            print(f'Dados do DataFrame carregados na tabela {table_name} do BigQuery.')
+            print(f'DataFrame data loaded into BigQuery table {table_name}')
 
         except Exception as e:
-            print(f"Erro ao carregar DataFrame no BigQuery: {str(e)}")
+            print(f"Error loading DataFrame into BigQuery: {str(e)}")
 
         finally:
-            self.close()
+            self._close()

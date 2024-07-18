@@ -1,19 +1,23 @@
 import requests
 
-def make_request(url, headers, params=None):
-    try:
-        # Fazendo a requisição GET
-        response = requests.get(url, headers=headers, params=params)
+def make_request(url, headers, params=None) -> dict:
+    """
+    Makes a GET request to a specific URL with the provided headers and parameters.
 
-        # Verificando se a requisição foi bem-sucedida (código de status 200)
-        if response.status_code == 200:
-            # Acessando os dados da resposta (formato JSON)
+    Args:
+        url (str): The URL of the API endpoint.
+        headers (dict): The request headers.
+        params (dict, optional): The request parameters. Defaults to None.
+
+    Returns:
+        dict: A dictionary containing the response data in JSON format.
+    """
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        if response.ok:
             data = response.json()
             return data
         else:
-            # Caso a requisição não tenha sido bem-sucedida, trate o erro de acordo
-            print('Erro na requisição:', response.status_code)
-
+            print('Request error:', response.status_code)
     except requests.exceptions.RequestException as e:
-        # Caso ocorra um erro na requisição, trate a exceção
-        print('Erro na requisição:', e)
+        print('Request error:', e)

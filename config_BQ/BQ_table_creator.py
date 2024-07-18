@@ -5,44 +5,44 @@ import pandas as pd
 class BigQueryTableCreator:
     def __init__(self, project: str,  is_bronze: bool = False):
         """
-        Inicializa a classe BigQueryTableCreator.
+        Initializes the BigQueryTableCreator class.
 
         Args:
-            project (str): O ID do projeto do BigQuery.
+            project (str): The BigQuery project ID.
         """
         self.project = project
         self.is_bronze = is_bronze
         self.bq = BigQueryPython(project=self.project)
 
-
     def create_table(self, dataframe: pd.DataFrame, dataset_id: str, table_name: str, not_null_columns: list = None) -> None:
         """
-        Cria uma tabela no BigQuery com base nos dados do DataFrame fornecido.
+        Creates a table in BigQuery based on the provided DataFrame.
 
         Args:
-            dataframe (pd.DataFrame): O DataFrame contendo os dados da tabela.
-            dataset_id (str): O ID do dataset onde a tabela será criada.
-            table_name (str): O nome da tabela a ser criada.
-            not_null_columns (list, optional): Lista das colunas que devem ser NOT NULL. Defaults to None.
+            dataframe (pd.DataFrame): The DataFrame containing table data.
+            dataset_id (str): The dataset ID where the table will be created.
+            table_name (str): The name of the table to be created.
+            not_null_columns (list, optional): List of columns that should be NOT NULL. Defaults to None.
         """
+
         query = self._generate_create_table_query(dataframe, dataset_id, table_name, not_null_columns)
         self.bq.query(sql=query)
-
 
     def _generate_create_table_query(self, dataframe: pd.DataFrame, dataset_id: str, table_name: str,
                                      not_null_columns: list = None) -> str:
         """
-        Gera a consulta SQL para criar a tabela no BigQuery com base no DataFrame fornecido.
+        Generates the SQL query to create a table in BigQuery based on the provided DataFrame.
 
         Args:
-            dataframe (pd.DataFrame): O DataFrame contendo os dados da tabela.
-            dataset_id (str): O ID do dataset onde a tabela será criada.
-            table_name (str): O nome da tabela a ser criada.
-            not_null_columns (list, optional): Lista das colunas que devem ser NOT NULL. Defaults to None.
+            dataframe (pd.DataFrame): The DataFrame containing table data.
+            dataset_id (str): The dataset ID where the table will be created.
+            table_name (str): The name of the table to be created.
+            not_null_columns (list, optional): List of columns that should be NOT NULL. Defaults to None.
 
         Returns:
-            str: A consulta SQL para criar a tabela.
+            str: The SQL query to create the table.
         """
+
         query = f"CREATE TABLE `{dataset_id}.{table_name}` (\n"
 
         for column_name, column_type in dataframe.dtypes.items():
@@ -53,22 +53,21 @@ class BigQueryTableCreator:
                 query += f"  `{column_name}` {bq_type},\n"
 
         query = query.rstrip(',\n') + "\n)"
-        print(query)
         return query
 
     def _map_dtype_to_bq_type(self, dtype: str) -> str:
         """
-        Mapeia os tipos de dados do pandas para os tipos de dados suportados pelo BigQuery.
+        Maps pandas data types to BigQuery supported data types.
 
         Args:
-            dtype (str): O tipo de dados do pandas.
+            dtype (str): The pandas data type.
 
         Returns:
-            str: O tipo de dados correspondente suportado pelo BigQuery.
+            str: The corresponding BigQuery supported data type.
         """
         if self.is_bronze:
-            return 'STRING'  # Se for bronze, todas as colunas são STRING
-        elif dtype == 'datetime64[ns]':
+            return 'STRING'  #If it's bronze, all columns are STRING
+        if dtype in ['datetime64[ns]' , 'datetime64[ns, UTC]' , 'datetime.date']:
             return 'DATE'
         elif dtype == 'object':
             return 'STRING'

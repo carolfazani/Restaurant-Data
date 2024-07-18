@@ -17,7 +17,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['idAtendente']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_lojas(self):
         dataset_id = 'gold'
@@ -26,7 +26,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['lojaId']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_maquinas(self):
         dataset_id = 'gold'
@@ -35,7 +35,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['maquinaId']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_pontoVenda(self):
         dataset_id = 'gold'
@@ -44,7 +44,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['pontoVendaId']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_material(self):
         dataset_id = 'gold'
@@ -53,7 +53,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['codMaterial']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_meioPagamento(self):
         dataset_id = 'gold'
@@ -62,7 +62,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['id']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_modoVenda(self):
         dataset_id = 'gold'
@@ -71,7 +71,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['modoVendaId']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
 
     def insert_rede(self):
@@ -81,7 +81,7 @@ class GoldDataPipeline(GoldModelData):
         not_null_columns = ['redeId']
         column_types = generate_column_types(df, not_null_columns)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_TRUNCATE
 
     def insert_movimentoCaixa(self):
         dataset_id = 'gold'
@@ -89,7 +89,7 @@ class GoldDataPipeline(GoldModelData):
         df = self.model_MovimentoCaixa()
         column_types = generate_column_types(df)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_APPEND
 
     def insert_itensVenda(self):
         dataset_id = 'gold'
@@ -97,7 +97,7 @@ class GoldDataPipeline(GoldModelData):
         df = self.model_itensVenda()
         column_types = generate_column_types(df)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') #WRITE_APPEND
 
     def insert_pagamentos(self):
         dataset_id = 'gold'
@@ -105,24 +105,18 @@ class GoldDataPipeline(GoldModelData):
         df = self.model_pagamentos()
         column_types = generate_column_types(df)
         self.bq.load_dataframe_to_bigquery(dataframe=df, dataset_id=dataset_id, table_name=table_id,
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_TRUNCATE') ##WRITE_APPEND
 
     def run(self):
+        self.insert_material()
+        self.insert_itensVenda()
+        self.insert_movimentoCaixa()
         self.insert_lojas()
         self.insert_meioPagamento()
         self.insert_atententes()
         self.insert_lojas()
         self.insert_maquinas()
         self.insert_pontoVenda()
-        self.insert_material()
         self.insert_modoVenda()
         self.insert_rede()
-        self.insert_movimentoCaixa()
-        self.insert_itensVenda()
         self.insert_pagamentos()
-
-
-
-
-
-

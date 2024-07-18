@@ -4,16 +4,13 @@ import pandas as pd
 from datetime import datetime
 
 
-
-
 class BronzeModelData:
     @staticmethod
     def extract_item_sales(start_date: str, end_date: str, chain: list, stores: list) -> tuple:
-        """Extrai as vendas de itens."""
         item_sales_extractor = SalesExtractor(endpoint="itemvenda")
         item_sales_data = item_sales_extractor.set_params(start_date, end_date, stores, chain).extract()
         item_sales_list = []
-        extraction_date = datetime.now().strftime('%Y-%m-%d')  # Data de extração
+        extraction_date = datetime.now().strftime('%Y-%m-%d')
         for item in item_sales_data:
             item_sales = item.get('data', [])
             for sale in item_sales:
@@ -26,12 +23,11 @@ class BronzeModelData:
 
     @staticmethod
     def extract_revenue(start_date: str, end_date: str, chain: list, stores: list) -> tuple:
-        """Extrai a receita e os meios de pagamento."""
         revenue_extractor = SalesExtractor(endpoint="movimentocaixa")
         revenue_data = revenue_extractor.set_params(start_date, end_date, stores, chain).extract()
         revenue_list = []
         payment_methods_list = []
-        extraction_date = datetime.now().strftime('%Y-%m-%d')  # Data de extração
+        extraction_date = datetime.now().strftime('%Y-%m-%d')
         for item in revenue_data:
             revenue_sales = item.get('data', [])
             for sale in revenue_sales:
@@ -40,9 +36,8 @@ class BronzeModelData:
             for movimento in revenue_sales:
                 payment_methods = movimento.get('meiosPagamento', [])
                 for payment_method in payment_methods:
-                    payment_method['extraction_date'] = extraction_date  # Adicionando a data de extração a cada método de pagamento
+                    payment_method['extraction_date'] = extraction_date
                     payment_method['idMovimentoCaixa'] = movimento['idMovimentoCaixa']
-                    #adc id movimento caixa
                     payment_methods_list.append(payment_method)
         revenue = pd.json_normalize(revenue_list)
         revenue = DataConverter.clean_column_names(revenue)

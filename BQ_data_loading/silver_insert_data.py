@@ -14,7 +14,7 @@ class SilverDataPipeline(SilverModelData):
         item_sales = self.extract_item_sales()
         column_types = generate_column_types(item_sales)
         self.bq.load_dataframe_to_bigquery(dataframe=item_sales, dataset_id='silver', table_name='item_sales',
-                                      column_types=column_types, load_mode='WRITE_APPEND')
+                                      column_types=column_types, load_mode='WRITE_APPEND') #td append
 
     def insert_revenue(self):
         revenue = self.extract_revenue()
