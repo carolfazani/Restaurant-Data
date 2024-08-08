@@ -1,3 +1,4 @@
-*.xlsx
-*.json
-apagar/
+
+__pycache__/
+.idea/
+pipeline.jpg

@@ -153,7 +153,7 @@ class GoldModelData:
 
     def model_itensVenda(self):
         query = f""" SELECT idItemVenda, redeId, lojaId, quantidade, codMaterial, operacaoId, atendenteId, pontoVendaId, modoVendaId, cancelado, timestampLancamento, dtLancamento,
-                     horaLancamento, tipoCancelamento, consumidores, valorTotal, valorUnitario ,comboId, motivoCancelamento FROM `team-analytics-datalake.silver.item_sales`  WHERE extraction_date = '{self.date}'"""
+                     horaLancamento, tipoCancelamento, consumidores, valorTotal, valorUnitario ,comboId, motivoCancelamento, codGrupo FROM `team-analytics-datalake.silver.item_sales`  WHERE extraction_date = '{self.date}'"""
         query_job = self.bq.query(query)
         data_list = []
         for data in query_job:
@@ -181,7 +181,7 @@ class GoldModelData:
         return data_df
 
     def model_pagamentos(self):
-        query = f""" SELECT idMovimentoCaixa,redeId, valor, idAtendente,turnoId FROM `team-analytics-datalake.silver.payment_methods`  WHERE extraction_date = '{self.date}'"""
+        query = f""" SELECT idMovimentoCaixa,redeId, valor, idAtendente,turnoId, id, codigo FROM `team-analytics-datalake.silver.payment_methods`  WHERE extraction_date = '{self.date}'"""
         query_job = self.bq.query(query)
         data_list = []
         for data in query_job:

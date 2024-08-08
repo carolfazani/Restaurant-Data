@@ -73,7 +73,7 @@ class DataConverter:
     @staticmethod
     def clean_column_names(df):
         regex = re.compile(r'[^a-zA-Z0-9_]')
-        def substituir(match):
+        def substituir():
             return '_'
         novos_nomes = [regex.sub(substituir, col) for col in df.columns]
         df.columns = novos_nomes

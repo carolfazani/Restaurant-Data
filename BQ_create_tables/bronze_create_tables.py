@@ -22,7 +22,7 @@ class BronzeTableCreator:
         self.table_creator.create_table(payment_methods, table_name='payment_methods', dataset_id='bronze')
 
     def run(self):
-        #self.create_item_sales_table()
+        self.create_item_sales_table()
         self.create_revenue_table()
 
 
