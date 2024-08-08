@@ -1,7 +1,8 @@
 ### Automating Data Pipelines with GCP: From Data Extraction to Strategic Insights
 
 
-##🧐 The Problem:
+
+## 🧐️ The Problem:
 Small businesses face the challenge of centralizing data from various sources and analyzing it. This demands an affordable solution since they cannot bear high infrastructure costs, and an accessible one because they cannot allocate a dedicated technical team for this.
 
 
